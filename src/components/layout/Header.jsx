@@ -32,8 +32,8 @@ export default function Header() {
     return (
         <header
             className={`fixed w-full z-50 transition-all duration-300 ${scrolled
-                ? 'bg-white/90 backdrop-blur-md shadow-sm py-2'
-                : 'bg-transparent py-4'
+                ? 'bg-white/95 backdrop-blur-md shadow-sm py-3'
+                : 'bg-gradient-to-b from-black/70 to-transparent py-5'
                 }`}
         >
             <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -43,35 +43,36 @@ export default function Header() {
                         <img
                             src={logoKemenag}
                             alt="Logo Kemenag"
-                            className="h-10 w-auto group-hover:scale-110 transition-transform duration-300"
+                            className="h-10 w-auto group-hover:drop-shadow-lg transition-all duration-300"
                         />
                         <div className={`flex flex-col transition-colors duration-300 ${scrolled ? 'text-gray-900' : 'text-white'}`}>
-                            <span className="font-bold text-lg leading-none">KUA SEMBAWA</span>
-                            <span className="text-xs font-medium tracking-wider opacity-90">KAB. BANYUASIN</span>
+                            <span className="font-bold text-lg leading-none tracking-tight">KUA SEMBAWA</span>
+                            <span className="text-[10px] font-bold tracking-[0.2em] opacity-90">KAB. BANYUASIN</span>
                         </div>
                     </Link>
 
                     {/* Desktop Menu */}
-                    <div className="hidden md:flex items-center space-x-8">
+                    <div className="hidden md:flex items-center gap-8">
                         {navigation.map((item) => (
                             <Link
                                 key={item.name}
                                 to={item.href}
-                                className={`text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 ${isActive(item.href)
-                                    ? 'text-kemenag-gold font-bold'
-                                    : scrolled
-                                        ? 'text-gray-600 hover:text-kemenag-green'
-                                        : 'text-white/90 hover:text-white'
+                                className={`relative text-sm font-medium transition-colors duration-300 group py-1 ${isActive(item.href)
+                                    ? (scrolled ? 'text-kemenag-green font-bold' : 'text-kemenag-gold font-bold')
+                                    : (scrolled ? 'text-gray-600 hover:text-kemenag-green' : 'text-white/90 hover:text-white')
                                     }`}
                             >
                                 {item.name}
+                                <span className={`absolute bottom-0 left-0 h-0.5 rounded-full bg-current transition-all duration-300 ease-out ${
+                                    isActive(item.href) ? 'w-full' : 'w-0 group-hover:w-full'
+                                }`}></span>
                             </Link>
                         ))}
                         <Link
                             to="/layanan/antrian"
-                            className={`px-5 py-2 rounded-full text-sm font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 ${scrolled
-                                ? 'bg-kemenag-green text-white hover:bg-kemenag-green-dark'
-                                : 'bg-white text-kemenag-green hover:bg-gray-100'
+                            className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95 ${scrolled
+                                ? 'bg-kemenag-green text-white hover:bg-kemenag-green-dark hover:shadow-kemenag-green/30'
+                                : 'bg-white text-kemenag-green hover:bg-gray-50'
                                 }`}
                         >
                             Ambil Antrian
@@ -82,45 +83,50 @@ export default function Header() {
                     <div className="md:hidden">
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className={`p-2 rounded-lg transition-colors ${scrolled ? 'text-gray-900' : 'text-white'
+                            className={`p-2 rounded-xl transition-all duration-300 ${scrolled 
+                                ? 'text-gray-900 hover:bg-gray-100' 
+                                : 'text-white hover:bg-white/10'
                                 }`}
                         >
                             {isOpen ? (
-                                <XMarkIcon className="h-6 w-6" />
+                                <XMarkIcon className="h-7 w-7" />
                             ) : (
-                                <Bars3Icon className="h-6 w-6" />
+                                <Bars3Icon className="h-7 w-7" />
                             )}
                         </button>
                     </div>
                 </div>
 
                 {/* Mobile Menu Dropdown */}
-                {isOpen && (
-                    <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t border-gray-100 animate-fade-in-up">
-                        <div className="px-4 py-6 space-y-3">
-                            {navigation.map((item) => (
-                                <Link
-                                    key={item.name}
-                                    to={item.href}
-                                    onClick={() => setIsOpen(false)}
-                                    className={`block px-4 py-2 rounded-lg text-base font-medium transition-colors ${isActive(item.href)
-                                        ? 'bg-kemenag-green/10 text-kemenag-green'
-                                        : 'text-gray-600 hover:bg-gray-50 hover:text-kemenag-green'
-                                        }`}
-                                >
-                                    {item.name}
-                                </Link>
-                            ))}
+                <div className={`md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-md shadow-xl border-t border-gray-100 transition-all duration-300 origin-top ${
+                    isOpen ? 'opacity-100 scale-y-100 visible' : 'opacity-0 scale-y-95 invisible'
+                }`}>
+                    <div className="px-5 py-6 space-y-2">
+                        {navigation.map((item) => (
+                            <Link
+                                key={item.name}
+                                to={item.href}
+                                onClick={() => setIsOpen(false)}
+                                className={`flex items-center justify-between px-4 py-3 rounded-xl text-base font-medium transition-all ${isActive(item.href)
+                                    ? 'bg-kemenag-green/10 text-kemenag-green'
+                                    : 'text-gray-600 hover:bg-gray-50 hover:text-kemenag-green hover:pl-6'
+                                    }`}
+                            >
+                                {item.name}
+                                {isActive(item.href) && <div className="w-1.5 h-1.5 rounded-full bg-kemenag-green"></div>}
+                            </Link>
+                        ))}
+                        <div className="pt-4 mt-2 border-t border-gray-100">
                             <Link
                                 to="/layanan/antrian"
                                 onClick={() => setIsOpen(false)}
-                                className="block w-full text-center mt-4 px-6 py-3 bg-kemenag-green text-white rounded-lg font-semibold shadow-md active:scale-95 transition-transform"
+                                className="block w-full text-center px-6 py-3.5 bg-kemenag-green text-white rounded-xl font-bold shadow-lg shadow-kemenag-green/20 active:scale-95 transition-all"
                             >
                                 Ambil Antrian Online
                             </Link>
                         </div>
                     </div>
-                )}
+                </div>
             </nav>
         </header>
     );

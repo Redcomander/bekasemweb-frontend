@@ -21,6 +21,15 @@ export default function Dashboard() {
     const [recentNikah, setRecentNikah] = useState([]);
     const [activeAntrian, setActiveAntrian] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentTime, setCurrentTime] = useState(new Date());
+
+    // Live clock - updates every second with Jakarta timezone
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
+        return () => clearInterval(timer);
+    }, []);
 
     useEffect(() => {
         fetchDashboardData();
@@ -29,14 +38,28 @@ export default function Dashboard() {
     const fetchDashboardData = async () => {
         setLoading(true);
         try {
-            const [statsRes, nikahRes, antrianRes] = await Promise.all([
-                api.get('/admin/dashboard/stats').catch(() => ({ data: null })),
-                api.get('/admin/pendaftaran-nikah', { params: { limit: 5 } }).catch(() => ({ data: [] })),
-                api.get('/admin/antrian', { params: { status: 'waiting', limit: 5 } }).catch(() => ({ data: [] }))
-            ]);
-            setStats(statsRes.data);
-            setRecentNikah(nikahRes.data || []);
-            setActiveAntrian(antrianRes.data?.filter(a => a.status === 'waiting')?.slice(0, 5) || []);
+            // Call the correct dashboard endpoint
+            const dashboardRes = await api.get('/admin/dashboard');
+            const dashboardData = dashboardRes.data?.data || dashboardRes.data || {};
+            
+            // Extract stats from the nested structure
+            const statsData = dashboardData.stats || {};
+            setStats({
+                pendaftaran: statsData.pendaftaran_pending || 0,
+                pendaftaran_today: dashboardData.this_month?.pendaftaran_baru || 0,
+                antrian: statsData.antrian_hari_ini || 0,
+                antrian_waiting: statsData.antrian_hari_ini || 0,
+                berita: statsData.total_berita || 0,
+                berita_draft: 0,
+                masjid: statsData.total_masjid || 0,
+                musholla: statsData.total_musholla || 0,
+            });
+            
+            // Use recent pendaftaran from dashboard response
+            setRecentNikah(dashboardData.recent_pendaftaran || []);
+            
+            // Antrian endpoint doesn't exist, so we'll leave it empty for now
+            setActiveAntrian([]);
         } catch (error) {
             console.error('Dashboard error:', error);
         } finally {
@@ -44,9 +67,20 @@ export default function Dashboard() {
         }
     };
 
-    const today = new Date();
-    const dateString = today.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-    const timeString = today.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    // Format date and time with Jakarta timezone
+    const dateString = currentTime.toLocaleDateString('id-ID', { 
+        timeZone: 'Asia/Jakarta',
+        weekday: 'long', 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric' 
+    });
+    const timeString = currentTime.toLocaleTimeString('id-ID', { 
+        timeZone: 'Asia/Jakarta',
+        hour: '2-digit', 
+        minute: '2-digit',
+        second: '2-digit'
+    });
 
     const statCards = [
         { name: 'Pendaftaran Nikah', value: stats?.pendaftaran || '0', change: `${stats?.pendaftaran_today || 0} hari ini`, icon: HeartIcon, color: 'bg-gradient-to-br from-pink-500 to-rose-600', link: '/admin/nikah' },

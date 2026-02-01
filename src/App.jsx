@@ -30,6 +30,8 @@ import MajelisIndex from './pages/admin/majelis/MajelisIndex';
 import NikahIndex from './pages/admin/nikah/NikahIndex';
 import AntrianIndex from './pages/admin/antrian/AntrianIndex';
 import UserIndex from './pages/admin/users/UserIndex';
+import ImamIndex from './pages/admin/imam/ImamIndex';
+import KhotibIndex from './pages/admin/khotib/KhotibIndex';
 import ProtectedRoute from './components/ProtectedRoute';
 
 /**
@@ -79,6 +81,8 @@ function App() {
             <Route path="nikah" element={<NikahIndex />} />
             <Route path="antrian" element={<AntrianIndex />} />
             <Route path="users" element={<UserIndex />} />
+            <Route path="imam" element={<ImamIndex />} />
+            <Route path="khotib" element={<KhotibIndex />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -8,8 +8,9 @@ import {
     ClockIcon,
     ArrowUpTrayIcon,
     MagnifyingGlassIcon,
-    DocumentIcon
-} from '@heroicons/react/24/outline';
+    DocumentIcon,
+    ArrowPathIcon
+} from '@heroicons/react/24/solid';
 
 const documentTypes = [
     { id: 'ktp_pria', label: 'KTP Calon Suami', group: 'Suami', required: true },
@@ -57,10 +58,10 @@ export default function PendaftaranStatus() {
 
         try {
             const response = await api.get(`/pendaftaran-nikah/status/${code}`);
-            setPendaftaran(response.data.data.pendaftaran);
-            setDokumens(response.data.data.dokumens);
+            setPendaftaran(response.data.pendaftaran);
+            setDokumens(response.data.dokumens);
         } catch (err) {
-            setError(err.response?.data?.message || 'Kode pendaftaran tidak ditemukan');
+            setError(err.message || 'Kode pendaftaran tidak ditemukan');
         } finally {
             setLoading(false);
         }
@@ -80,7 +81,7 @@ export default function PendaftaranStatus() {
             });
             // Refresh data
             const response = await api.get(`/pendaftaran-nikah/status/${pendaftaran.kode_pendaftaran}`);
-            setDokumens(response.data.data.dokumens);
+            setDokumens(response.data.dokumens);
             alert('Upload berhasil!');
         } catch (err) {
             alert(err.response?.data?.message || 'Gagal upload file');
@@ -90,18 +91,22 @@ export default function PendaftaranStatus() {
     };
 
     const getStatusBadge = (status) => {
-        switch (status) {
-            case 'disetujui': return <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">Disetujui</span>;
-            case 'revisi': return <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">Perlu Revisi</span>;
-            case 'diajukan': return <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">Menunggu Verifikasi</span>;
-            default: return <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">{status}</span>;
-        }
+        const statusMap = {
+            disetujui: { bg: 'bg-green-100', text: 'text-green-700', label: 'Disetujui' },
+            revisi: { bg: 'bg-red-100', text: 'text-red-700', label: 'Perlu Revisi' },
+            diajukan: { bg: 'bg-yellow-100', text: 'text-yellow-700', label: 'Menunggu Verifikasi' },
+            verifikasi: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Sedang Diverifikasi' },
+            selesai: { bg: 'bg-gray-100', text: 'text-gray-700', label: 'Selesai' },
+            ditolak: { bg: 'bg-red-100', text: 'text-red-700', label: 'Ditolak' },
+        };
+        const s = statusMap[status] || { bg: 'bg-gray-100', text: 'text-gray-700', label: status };
+        return <span className={`px-3 py-1 ${s.bg} ${s.text} rounded-full text-sm font-medium`}>{s.label}</span>;
     };
 
     const getDocStatus = (docTypeId) => {
         const doc = dokumens.find(d => d.jenis === docTypeId);
         if (doc) {
-            if (doc.status === 'valid') return { color: 'text-green-600', icon: CheckCircleIcon, label: 'Valid' };
+            if (doc.status === 'valid') return { color: 'text-green-600', icon: CheckCircleIcon, label: 'Terverifikasi' };
             if (doc.status === 'invalid') return { color: 'text-red-600', icon: XCircleIcon, label: 'Ditolak/Revisi' };
             return { color: 'text-yellow-600', icon: ClockIcon, label: 'Menunggu Cek' };
         }
