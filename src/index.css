@@ -1,0 +1,204 @@
+@import "tailwindcss";
+
+/* ==========================================
+   BEKASEMWEB - Kemenag Premium Theme
+   ========================================== */
+
+@theme {
+  /* Kemenag Official & Premium Colors */
+  --color-kemenag-green: #0B553D;
+  /* Deeper, richer green */
+  --color-kemenag-green-dark: #06402E;
+  --color-kemenag-green-light: #158060;
+
+  --color-kemenag-gold: #D4AF37;
+  /* Metallic gold */
+  --color-kemenag-gold-dark: #B59326;
+  --color-kemenag-gold-light: #F3D97F;
+  --color-kemenag-gold-50: #FCF9EB;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Modern Radius */
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+}
+
+/* ==========================================
+   Base Styles
+   ========================================== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #F8FAFC;
+  /* Slate-50 - cleaner than plain white */
+  color: #1E293B;
+  /* Slate-800 - softer than pure black */
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ==========================================
+   Utility Classes & Components
+   ========================================== */
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.glass-dark {
+  background: rgba(11, 85, 61, 0.85);
+  /* Green glass */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Premium Card */
+.premium-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: var(--color-kemenag-gold-light);
+}
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-kemenag-green) 0%, var(--color-kemenag-green-light) 100%);
+  color: white;
+  padding: 0.75rem 1.75rem;
+  border-radius: 9999px;
+  /* Pill shape */
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px 0 rgba(11, 85, 61, 0.39);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(11, 85, 61, 0.23);
+  filter: brightness(110%);
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, var(--color-kemenag-gold) 0%, var(--color-kemenag-gold-dark) 100%);
+  color: white;
+  padding: 0.75rem 1.75rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px 0 rgba(212, 175, 55, 0.3);
+}
+
+.btn-gold:hover {
+  transform: translateY(-2px);
+  filter: brightness(110%);
+}
+
+/* ==========================================
+   Animations
+   ========================================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 30px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* ==========================================
+   Decorative Backgrounds
+   ========================================== */
+.bg-pattern {
+  background-image: radial-gradient(var(--color-kemenag-gold-light) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* ==========================================
+   Form Elements
+   ========================================== */
+.form-input-premium {
+  width: 100%;
+  padding: 0.875rem 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid #cbd5e1;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+  color: #1e293b;
+}
+
+.form-input-premium:focus {
+  border-color: var(--color-kemenag-green);
+  box-shadow: 0 0 0 4px rgba(11, 85, 61, 0.1);
+  outline: none;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+.form-group-premium {
+  margin-bottom: 1.5rem;
+}
