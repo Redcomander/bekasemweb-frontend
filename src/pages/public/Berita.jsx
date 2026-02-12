@@ -1,31 +1,54 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { CalendarDaysIcon, EyeIcon, UserIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
+import { Link, useSearchParams } from 'react-router-dom';
+import { CalendarDaysIcon, EyeIcon, UserIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { beritaApi } from '../../services/api';
+import { formatDate } from '../../utils/date';
+
+// Storage URL helper
+const STORAGE_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8000';
 
 export default function Berita() {
     const [beritas, setBeritas] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [pagination, setPagination] = useState({ current_page: 1, last_page: 1 });
+    const [searchParams, setSearchParams] = useSearchParams();
+    
+    // Get page from URL or default to 1
+    const page = parseInt(searchParams.get('page')) || 1;
 
-    // Fetch data from API (Real implementation)
     useEffect(() => {
-        // Fallback dummy data while waiting for real data to be populated
-        const dummyBerita = Array(6).fill(0).map((_, i) => ({
-            id: i + 1,
-            title: `Judul Berita atau Artikel Contoh Nomor ${i + 1}`,
-            slug: `judul-berita-${i + 1}`,
-            excerpt: 'Ini adalah ringkasan berita yang berisi informasi singkat mengenai konten berita tersebut agar pembaca tertarik untuk membacanya lebih lanjut.',
-            image: `https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=800&auto=format&fit=crop`,
-            date: '12 Jan 2026',
-            views: 45,
-            author: 'Admin KUA'
-        }));
+        fetchBerita(page);
+    }, [page]);
 
-        // Simulate API call
-        setTimeout(() => {
-            setBeritas(dummyBerita);
+    const fetchBerita = async (pageNumber) => {
+        setLoading(true);
+        try {
+            const response = await beritaApi.getAll({ page: pageNumber });
+            setBeritas(response.data || []);
+            setPagination({
+                current_page: response.current_page || 1,
+                last_page: response.last_page || 1,
+                total: response.total
+            });
+        } catch (error) {
+            console.error('Error fetching berita:', error);
+        } finally {
             setLoading(false);
-        }, 1000);
-    }, []);
+        }
+    };
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= pagination.last_page) {
+            setSearchParams({ page: newPage });
+            window.scrollTo(0, 0); // Scroll to top
+        }
+    };
+
+    const getImageUrl = (path) => {
+        if (!path) return 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=800&auto=format&fit=crop'; // Default fallback
+        if (path.startsWith('http')) return path;
+        return `${STORAGE_URL}/storage/${path}`;
+    };
 
     return (
         <div>
@@ -39,7 +62,7 @@ export default function Berita() {
             </section>
 
             {/* List Berita */}
-            <section className="py-16 bg-white">
+            <section className="py-16 bg-white min-h-[60vh]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {loading ? (
                         <div className="grid md:grid-cols-3 gap-8">
@@ -51,38 +74,45 @@ export default function Berita() {
                                 </div>
                             ))}
                         </div>
+                    ) : beritas.length === 0 ? (
+                        <div className="text-center py-20 bg-gray-50 rounded-2xl border border-gray-100">
+                            <p className="text-gray-500 text-lg">Belum ada berita yang diterbitkan.</p>
+                        </div>
                     ) : (
                         <div>
                             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 {beritas.map((berita) => (
-                                    <article key={berita.id} className="premium-card overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
-                                        <Link to={`/berita/${berita.slug}`}>
-                                            <div className="h-48 overflow-hidden relative">
+                                    <article key={berita.id} className="premium-card overflow-hidden group hover:-translate-y-1 transition-transform duration-300 flex flex-col h-full">
+                                        <Link to={`/berita/${berita.slug}`} className="block h-full flex flex-col">
+                                            <div className="h-48 overflow-hidden relative flex-shrink-0">
                                                 <img
-                                                    src={berita.image}
-                                                    alt={berita.title}
+                                                    src={getImageUrl(berita.gambar)}
+                                                    alt={berita.judul}
                                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                                 />
-                                                <div className="absolute top-4 left-4 bg-kemenag-green text-white text-xs font-bold px-3 py-1 rounded-full">
-                                                    BERITA
-                                                </div>
+                                                {berita.kategori && (
+                                                    <div className="absolute top-4 left-4 bg-kemenag-green text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-lg">
+                                                        {berita.kategori}
+                                                    </div>
+                                                )}
                                             </div>
-                                            <div className="p-6">
+                                            <div className="p-6 flex flex-col flex-grow">
                                                 <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
                                                     <span className="flex items-center gap-1">
-                                                        <CalendarDaysIcon className="w-4 h-4" /> {berita.date}
+                                                        <CalendarDaysIcon className="w-4 h-4" /> 
+                                                        {formatDate(berita.published_at || berita.created_at || berita.date)}
                                                     </span>
                                                     <span className="flex items-center gap-1">
-                                                        <UserIcon className="w-4 h-4" /> {berita.author}
+                                                        <EyeIcon className="w-4 h-4" /> {berita.views || 0}
                                                     </span>
                                                 </div>
                                                 <h2 className="text-xl font-bold text-gray-900 mb-3 leading-tight group-hover:text-kemenag-green transition-colors line-clamp-2">
-                                                    {berita.title}
+                                                    {berita.judul}
                                                 </h2>
-                                                <p className="text-gray-600 text-sm line-clamp-3 mb-4">
-                                                    {berita.excerpt}
+                                                <p className="text-gray-600 text-sm line-clamp-3 mb-4 flex-grow">
+                                                    {berita.ringkasan}
                                                 </p>
-                                                <div className="text-kemenag-gold font-semibold text-sm flex items-center gap-1">
+                                                <div className="text-kemenag-gold font-semibold text-sm flex items-center gap-1 mt-auto">
                                                     Baca Selengkapnya
                                                     <ArrowRightIcon className="w-4 h-4" />
                                                 </div>
@@ -92,12 +122,30 @@ export default function Berita() {
                                 ))}
                             </div>
 
-                            {/* Pagination (Static for now) */}
-                            <div className="mt-12 flex justify-center gap-2">
-                                <button className="w-10 h-10 rounded-lg bg-kemenag-green text-white font-bold">1</button>
-                                <button className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700">2</button>
-                                <button className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700">3</button>
-                            </div>
+                            {/* Pagination */}
+                            {pagination.last_page > 1 && (
+                                <div className="mt-12 flex justify-center items-center gap-2">
+                                    <button 
+                                        onClick={() => handlePageChange(pagination.current_page - 1)}
+                                        disabled={pagination.current_page === 1}
+                                        className="w-10 h-10 rounded-lg flex items-center justify-center bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        <ChevronLeftIcon className="w-5 h-5" />
+                                    </button>
+                                    
+                                    <span className="px-4 text-sm font-medium text-gray-600">
+                                        Halaman {pagination.current_page} dari {pagination.last_page}
+                                    </span>
+
+                                    <button 
+                                        onClick={() => handlePageChange(pagination.current_page + 1)}
+                                        disabled={pagination.current_page === pagination.last_page}
+                                        className="w-10 h-10 rounded-lg flex items-center justify-center bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        <ChevronRightIcon className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

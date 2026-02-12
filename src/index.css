@@ -6,19 +6,19 @@
 
 @theme {
   /* Kemenag Official & Premium Colors */
-  --color-kemenag-green: #0B553D;
+  --color-kemenag-green: #0b553d;
   /* Deeper, richer green */
-  --color-kemenag-green-dark: #06402E;
+  --color-kemenag-green-dark: #06402e;
   --color-kemenag-green-light: #158060;
 
-  --color-kemenag-gold: #D4AF37;
+  --color-kemenag-gold: #d4af37;
   /* Metallic gold */
-  --color-kemenag-gold-dark: #B59326;
-  --color-kemenag-gold-light: #F3D97F;
-  --color-kemenag-gold-50: #FCF9EB;
+  --color-kemenag-gold-dark: #b59326;
+  --color-kemenag-gold-light: #f3d97f;
+  --color-kemenag-gold-50: #fcf9eb;
 
   /* Typography */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 
   /* Modern Radius */
   --radius-xl: 1rem;
@@ -36,9 +36,9 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background-color: #F8FAFC;
+  background-color: #f8fafc;
   /* Slate-50 - cleaner than plain white */
-  color: #1E293B;
+  color: #1e293b;
   /* Slate-800 - softer than pure black */
   line-height: 1.6;
   overflow-x: hidden;
@@ -68,20 +68,28 @@ body {
 .premium-card {
   background: white;
   border-radius: var(--radius-xl);
-  border: 1px solid #E2E8F0;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  border: 1px solid #e2e8f0;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .premium-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
   border-color: var(--color-kemenag-gold-light);
 }
 
 /* Buttons */
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-kemenag-green) 0%, var(--color-kemenag-green-light) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-kemenag-green) 0%,
+    var(--color-kemenag-green-light) 100%
+  );
   color: white;
   padding: 0.75rem 1.75rem;
   border-radius: 9999px;
@@ -99,7 +107,11 @@ body {
 }
 
 .btn-gold {
-  background: linear-gradient(135deg, var(--color-kemenag-gold) 0%, var(--color-kemenag-gold-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-kemenag-gold) 0%,
+    var(--color-kemenag-gold-dark) 100%
+  );
   color: white;
   padding: 0.75rem 1.75rem;
   border-radius: 9999px;
@@ -133,6 +145,21 @@ body {
   animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s ease-out forwards;
+}
+
 .delay-100 {
   animation-delay: 100ms;
 }
@@ -163,11 +190,29 @@ body {
   animation: float 6s ease-in-out infinite;
 }
 
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
 /* ==========================================
    Decorative Backgrounds
    ========================================== */
 .bg-pattern {
-  background-image: radial-gradient(var(--color-kemenag-gold-light) 1px, transparent 1px);
+  background-image: radial-gradient(
+    var(--color-kemenag-gold-light) 1px,
+    transparent 1px
+  );
   background-size: 32px 32px;
 }
 

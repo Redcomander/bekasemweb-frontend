@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PlusIcon, PencilSquareIcon, TrashIcon, MagnifyingGlassIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import api from '../../../services/api';
+import ConfirmModal from '../../../components/ConfirmModal';
 
 export default function MajelisIndex() {
     const [majelis, setMajelis] = useState([]);
@@ -10,6 +11,8 @@ export default function MajelisIndex() {
     const [editingItem, setEditingItem] = useState(null);
     const [formData, setFormData] = useState({ nama: '', ketua: '', alamat: '', jumlah_anggota: '' });
     const [submitting, setSubmitting] = useState(false);
+    const [deleteConfirm, setDeleteConfirm] = useState({ open: false, id: null });
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => { fetchData(); }, []);
 
@@ -43,13 +46,17 @@ export default function MajelisIndex() {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!confirm('Yakin ingin menghapus?')) return;
+    const handleDelete = async () => {
+        if (!deleteConfirm.id) return;
+        setDeleting(true);
         try {
-            await api.delete(`/admin/majelis-taklim/${id}`);
+            await api.delete(`/admin/majelis-taklim/${deleteConfirm.id}`);
             fetchData();
+            setDeleteConfirm({ open: false, id: null });
         } catch (error) {
             alert(error.message);
+        } finally {
+            setDeleting(false);
         }
     };
 
@@ -119,7 +126,7 @@ export default function MajelisIndex() {
                                         <td className="px-6 py-4 text-sm text-gray-600">{item.jumlah_anggota || '-'} orang</td>
                                         <td className="px-6 py-4 text-right space-x-2">
                                             <button onClick={() => openModal(item)} className="text-blue-600 hover:text-blue-800"><PencilSquareIcon className="w-5 h-5" /></button>
-                                            <button onClick={() => handleDelete(item.id)} className="text-red-600 hover:text-red-800"><TrashIcon className="w-5 h-5" /></button>
+                                            <button onClick={() => setDeleteConfirm({ open: true, id: item.id })} className="text-red-600 hover:text-red-800"><TrashIcon className="w-5 h-5" /></button>
                                         </td>
                                     </tr>
                                 ))}
@@ -158,6 +165,17 @@ export default function MajelisIndex() {
                     </div>
                 </div>
             )}
+
+            <ConfirmModal 
+                isOpen={deleteConfirm.open}
+                onClose={() => setDeleteConfirm({ open: false, id: null })}
+                onConfirm={handleDelete}
+                loading={deleting}
+                title="Hapus Majelis"
+                message="Apakah Anda yakin ingin menghapus majelis taklim ini?"
+                confirmText="Hapus"
+                type="danger"
+            />
         </div>
     );
 }

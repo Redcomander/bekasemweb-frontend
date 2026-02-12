@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PlusIcon, PencilSquareIcon, TrashIcon, MagnifyingGlassIcon, MapPinIcon, UserIcon, MicrophoneIcon, DocumentIcon, PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import api from '../../../services/api';
+import ConfirmModal from '../../../components/ConfirmModal';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -17,6 +18,8 @@ export default function MasjidIndex() {
     const [files, setFiles] = useState({ jadwal_imam_file: null, jadwal_khotib_file: null });
     const [deleteFiles, setDeleteFiles] = useState({ jadwal_imam_file: false, jadwal_khotib_file: false });
     const [submitting, setSubmitting] = useState(false);
+    const [deleteConfirm, setDeleteConfirm] = useState({ open: false, id: null });
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => { fetchData(); }, []);
 
@@ -70,13 +73,17 @@ export default function MasjidIndex() {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!confirm('Yakin ingin menghapus?')) return;
+    const handleDelete = async () => {
+        if (!deleteConfirm.id) return;
+        setDeleting(true);
         try {
-            await api.delete(`/admin/masjid/${id}`);
+            await api.delete(`/admin/masjid/${deleteConfirm.id}`);
             fetchData();
+            setDeleteConfirm({ open: false, id: null });
         } catch (error) {
             alert(error.message);
+        } finally {
+            setDeleting(false);
         }
     };
 
@@ -143,7 +150,7 @@ export default function MasjidIndex() {
                                 </span>
                                 <div className="flex gap-2">
                                     <button onClick={() => openModal(item)} className="text-blue-600 hover:text-blue-800"><PencilSquareIcon className="w-5 h-5" /></button>
-                                    <button onClick={() => handleDelete(item.id)} className="text-red-600 hover:text-red-800"><TrashIcon className="w-5 h-5" /></button>
+                                    <button onClick={() => setDeleteConfirm({ open: true, id: item.id })} className="text-red-600 hover:text-red-800"><TrashIcon className="w-5 h-5" /></button>
                                 </div>
                             </div>
                             <h3 className="font-bold text-gray-900 mb-1">{item.nama}</h3>
@@ -299,6 +306,17 @@ export default function MasjidIndex() {
                     </div>
                 </div>
             )}
+
+            <ConfirmModal 
+                isOpen={deleteConfirm.open}
+                onClose={() => setDeleteConfirm({ open: false, id: null })}
+                onConfirm={handleDelete}
+                loading={deleting}
+                title="Hapus Masjid"
+                message="Apakah Anda yakin ingin menghapus data masjid ini?"
+                confirmText="Hapus"
+                type="danger"
+            />
         </div>
     );
 }

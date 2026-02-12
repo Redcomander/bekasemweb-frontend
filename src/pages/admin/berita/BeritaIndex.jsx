@@ -16,6 +16,7 @@ import {
 } from '@heroicons/react/24/outline';
 import api from '../../../services/api';
 import MediaPicker from '../../../components/MediaPicker';
+import ConfirmModal from '../../../components/ConfirmModal';
 
 // Storage URL for images
 const STORAGE_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:8000';
@@ -45,6 +46,8 @@ export default function BeritaIndex() {
         ringkasan: ''
     });
     const [submitting, setSubmitting] = useState(false);
+    const [deleteState, setDeleteState] = useState({ open: false, type: null, id: null });
+    const [deleting, setDeleting] = useState(false);
     
     // Category management
     const [categories, setCategories] = useState([]);
@@ -126,13 +129,22 @@ export default function BeritaIndex() {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!confirm('Yakin ingin menghapus berita ini?')) return;
+    const handleConfirmDelete = async () => {
+        if (!deleteState.id) return;
+        setDeleting(true);
         try {
-            await api.delete(`/admin/berita/${id}`);
-            fetchBerita();
+            if (deleteState.type === 'berita') {
+                await api.delete(`/admin/berita/${deleteState.id}`);
+                fetchBerita();
+            } else if (deleteState.type === 'category') {
+                await api.delete(`/admin/kategori-berita/${deleteState.id}`);
+                fetchCategories();
+            }
+            setDeleteState({ open: false, type: null, id: null });
         } catch (error) {
-            alert(error.message || 'Gagal menghapus berita');
+            alert(error.message || 'Gagal menghapus');
+        } finally {
+            setDeleting(false);
         }
     };
 
@@ -199,14 +211,10 @@ export default function BeritaIndex() {
         }
     };
 
-    const deleteCategory = async (id) => {
-        if (!confirm('Hapus kategori ini?')) return;
-        try {
-            await api.delete(`/admin/kategori-berita/${id}`);
-            fetchCategories();
-        } catch (error) {
-            alert(error.message || 'Gagal menghapus kategori');
-        }
+    // Legacy delete function removed, replaced by handleConfirmDelete with type check
+    // keeping this empty or removing references
+    const requestDeleteCategory = (id) => {
+        setDeleteState({ open: true, type: 'category', id });
     };
 
     const filteredBerita = berita.filter(b => 
@@ -280,7 +288,7 @@ export default function BeritaIndex() {
                                                 <button onClick={() => setEditingCategoryIndex(index)} className="opacity-0 group-hover:opacity-100 p-0.5 hover:text-blue-600 transition-opacity">
                                                     <PencilSquareIcon className="w-3.5 h-3.5" />
                                                 </button>
-                                                <button onClick={() => deleteCategory(cat.id)} className="opacity-0 group-hover:opacity-100 p-0.5 hover:text-red-600 transition-opacity">
+                                                <button onClick={() => requestDeleteCategory(cat.id)} className="opacity-0 group-hover:opacity-100 p-0.5 hover:text-red-600 transition-opacity">
                                                     <TrashIcon className="w-3.5 h-3.5" />
                                                 </button>
                                             </>
@@ -367,7 +375,7 @@ export default function BeritaIndex() {
                                     <button onClick={() => openModal(item)} className="flex-1 flex items-center justify-center gap-1 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
                                         <PencilSquareIcon className="w-4 h-4" /> Edit
                                     </button>
-                                    <button onClick={() => handleDelete(item.id)} className="flex-1 flex items-center justify-center gap-1 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                                    <button onClick={() => setDeleteState({ open: true, type: 'berita', id: item.id })} className="flex-1 flex items-center justify-center gap-1 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors">
                                         <TrashIcon className="w-4 h-4" /> Hapus
                                     </button>
                                 </div>
@@ -594,6 +602,17 @@ export default function BeritaIndex() {
                     </div>
                 </div>
             )}
+            {/* Confirm Modal */}
+            <ConfirmModal 
+                isOpen={deleteState.open}
+                onClose={() => setDeleteState({ open: false, type: null, id: null })}
+                onConfirm={handleConfirmDelete}
+                loading={deleting}
+                title={deleteState.type === 'category' ? "Hapus Kategori" : "Hapus Berita"}
+                message={deleteState.type === 'category' ? "Hapus kategori ini? Berita dalam kategori ini mungkin akan kehilangan kategorinya." : "Yakin ingin menghapus berita ini? Tindakan ini tidak dapat dibatalkan."}
+                confirmText="Hapus"
+                type="danger"
+            />
         </div>
     );
 }

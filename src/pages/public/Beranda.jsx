@@ -24,6 +24,7 @@ export default function Beranda() {
     const [news, setNews] = useState([]);
     const [loadingWeddings, setLoadingWeddings] = useState(true);
     const [loadingNews, setLoadingNews] = useState(true);
+    const [openFaq, setOpenFaq] = useState(null);
 
     // Live clock
     useEffect(() => {
@@ -373,21 +374,59 @@ export default function Beranda() {
                 </div>
             </section>
 
-            {/* CTA SECTION */}
-            <section className="relative py-24 bg-kemenag-green-dark overflow-hidden">
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                <div className="relative max-w-4xl mx-auto px-4 text-center text-white">
-                    <h2 className="text-3xl md:text-5xl font-bold mb-6">Siap Melayani Kebutuhan Anda</h2>
-                    <p className="text-lg text-white/80 mb-10 max-w-2xl mx-auto">
-                        Kami berkomitmen memberikan pelayanan terbaik, transparan, dan mudah diakses bagi seluruh masyarakat Kecamatan Sembawa.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link to="/layanan/antrian" className="btn-gold px-8 py-4 text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1">
-                            Ambil Antrian
-                        </Link>
-                        <Link to="/faq" className="px-8 py-4 rounded-full border border-white/20 hover:bg-white hover:text-kemenag-green font-semibold transition-all backdrop-blur-sm">
-                            Pertanyaan Umum
-                        </Link>
+            {/* FAQ SECTION */}
+            <section className="py-20 bg-white border-t border-gray-100">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-16">
+                        <span className="text-kemenag-green font-bold tracking-wider text-sm uppercase">FAQ</span>
+                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-2">Pertanyaan Sering Diajukan</h2>
+                        <p className="text-gray-500 mt-3">Beberapa pertanyaan umum seputar layanan KUA Kecamatan Sembawa.</p>
+                    </div>
+
+                    <div className="space-y-4">
+                        {[
+                            {
+                                question: 'Apa saja syarat pendaftaran nikah secara online?',
+                                answer: 'Syarat utama meliputi NIK Calon Suami & Istri, Data Wali, Surat N1-N4 dari Kelurahan/Desa, Surat Sehat/Imunisasi (Catin), dan foto latar biru. Dokumen diupload dalam format JPG/PDF.'
+                            },
+                            {
+                                question: 'Berapa biaya nikah di KUA?',
+                                answer: 'Biaya nikah di KUA pada jam kerja adalah Rp 0 (Gratis). Jika akad nikah dilakukan di luar KUA atau di luar jam kerja, dikenakan biaya PNBP sebesar Rp 600.000 yang disetor ke negara.'
+                            },
+                            {
+                                question: 'Bagaimana cara cek ketersediaan jadwal akad nikah?',
+                                answer: 'Anda dapat mengecek ketersediaan jadwal melalui menu "Jadwal Nikah" di website ini. Jadwal yang ditampilkan adalah real-time dan terintegrasi dengan sistem KUA.'
+                            },
+                            {
+                                question: 'Berapa lama proses verifikasi berkas pendaftaran?',
+                                answer: 'Proses verifikasi berkas biasanya memakan waktu 1-3 hari kerja. Anda dapat memantau status secara berkala melalui menu "Cek Status" dengan memasukkan kode pendaftaran.'
+                            },
+                            {
+                                question: 'Apakah bisa mengurus rekomendasi nikah (Numpang Nikah)?',
+                                answer: 'Bisa. Silakan datang langsung ke KUA dengan membawa surat pengantar dari Desa/Kelurahan (N1, N2, N4) dan fotokopi KTP/KK. Petugas akan membuatkan surat rekomendasi nikah.'
+                            }
+                        ].map((faq, idx) => (
+                            <div key={idx} className="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50/50 hover:bg-white transition-colors">
+                                <button
+                                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                                    className="w-full flex justify-between items-center p-6 text-left focus:outline-none"
+                                >
+                                    <span className={`font-bold text-lg ${openFaq === idx ? 'text-kemenag-green' : 'text-gray-900'}`}>
+                                        {faq.question}
+                                    </span>
+                                    <span className={`transform transition-transform duration-300 ${openFaq === idx ? 'rotate-180' : ''}`}>
+                                        <ArrowRightIcon className={`w-5 h-5 ${openFaq === idx ? 'text-kemenag-green rotate-90' : 'text-gray-400'}`} />
+                                    </span>
+                                </button>
+                                <div
+                                    className={`transition-all duration-300 ease-in-out px-6 ${
+                                        openFaq === idx ? 'max-h-48 pb-6 opacity-100' : 'max-h-0 opacity-0'
+                                    }`}
+                                >
+                                    <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>

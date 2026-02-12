@@ -17,6 +17,7 @@ import PendaftaranWizard from './pages/public/pendaftaran/PendaftaranWizard';
 import PendaftaranSukses from './pages/public/pendaftaran/PendaftaranSukses';
 import PendaftaranStatus from './pages/public/pendaftaran/PendaftaranStatus';
 import LayananAntrian from './pages/public/layanan/LayananAntrian';
+import LayananDetail from './pages/public/layanan/LayananDetail';
 
 // Admin Pages
 import AdminLogin from './pages/admin/AdminLogin';
@@ -32,6 +33,7 @@ import AntrianIndex from './pages/admin/antrian/AntrianIndex';
 import UserIndex from './pages/admin/users/UserIndex';
 import ImamIndex from './pages/admin/imam/ImamIndex';
 import KhotibIndex from './pages/admin/khotib/KhotibIndex';
+import NotificationIndex from './pages/admin/notifikasi/NotificationIndex';
 import ProtectedRoute from './components/ProtectedRoute';
 
 /**
@@ -60,6 +62,7 @@ function App() {
             <Route path="pendaftaran-sukses" element={<PendaftaranSukses />} />
             <Route path="layanan/nikah/cek" element={<PendaftaranStatus />} />
             <Route path="layanan/antrian" element={<LayananAntrian />} />
+            <Route path="layanan/:slug" element={<LayananDetail />} />
           </Route>
 
           {/* Admin Routes */}
@@ -83,6 +86,7 @@ function App() {
             <Route path="users" element={<UserIndex />} />
             <Route path="imam" element={<ImamIndex />} />
             <Route path="khotib" element={<KhotibIndex />} />
+            <Route path="notifikasi" element={<NotificationIndex />} />
           </Route>
         </Routes>
       </BrowserRouter>

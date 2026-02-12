@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PlusIcon, PencilSquareIcon, TrashIcon, MagnifyingGlassIcon, MicrophoneIcon } from '@heroicons/react/24/outline';
 import api from '../../../services/api';
+import ConfirmModal from '../../../components/ConfirmModal';
 
 export default function KhotibIndex() {
     const [khotibs, setKhotibs] = useState([]);
@@ -10,6 +11,8 @@ export default function KhotibIndex() {
     const [editingItem, setEditingItem] = useState(null);
     const [formData, setFormData] = useState({ nama: '', no_hp: '', alamat: '', is_active: true });
     const [submitting, setSubmitting] = useState(false);
+    const [deleteConfirm, setDeleteConfirm] = useState({ open: false, id: null });
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => { fetchData(); }, []);
 
@@ -43,13 +46,17 @@ export default function KhotibIndex() {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!confirm('Yakin ingin menghapus khotib ini?')) return;
+    const handleDelete = async () => {
+        if (!deleteConfirm.id) return;
+        setDeleting(true);
         try {
-            await api.delete(`/admin/khotib/${id}`);
+            await api.delete(`/admin/khotib/${deleteConfirm.id}`);
             fetchData();
+            setDeleteConfirm({ open: false, id: null });
         } catch (error) {
             alert(error.message);
+        } finally {
+            setDeleting(false);
         }
     };
 
@@ -116,7 +123,7 @@ export default function KhotibIndex() {
                                     <button onClick={() => openModal(item)} className="flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg">
                                         <PencilSquareIcon className="w-4 h-4" /> Edit
                                     </button>
-                                    <button onClick={() => handleDelete(item.id)} className="flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg">
+                                    <button onClick={() => setDeleteConfirm({ open: true, id: item.id })} className="flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg">
                                         <TrashIcon className="w-4 h-4" /> Hapus
                                     </button>
                                 </div>
@@ -156,7 +163,7 @@ export default function KhotibIndex() {
                                         </td>
                                         <td className="px-6 py-4 text-right space-x-2">
                                             <button onClick={() => openModal(item)} className="text-blue-600 hover:text-blue-800"><PencilSquareIcon className="w-5 h-5" /></button>
-                                            <button onClick={() => handleDelete(item.id)} className="text-red-600 hover:text-red-800"><TrashIcon className="w-5 h-5" /></button>
+                                            <button onClick={() => setDeleteConfirm({ open: true, id: item.id })} className="text-red-600 hover:text-red-800"><TrashIcon className="w-5 h-5" /></button>
                                         </td>
                                     </tr>
                                 ))}
@@ -196,6 +203,17 @@ export default function KhotibIndex() {
                     </div>
                 </div>
             )}
+
+            <ConfirmModal 
+                isOpen={deleteConfirm.open}
+                onClose={() => setDeleteConfirm({ open: false, id: null })}
+                onConfirm={handleDelete}
+                loading={deleting}
+                title="Hapus Khotib"
+                message="Apakah Anda yakin ingin menghapus data khotib ini?"
+                confirmText="Hapus"
+                type="danger"
+            />
         </div>
     );
 }

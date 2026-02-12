@@ -14,6 +14,7 @@ import {
   ChevronRightIcon,
 } from '@heroicons/react/24/outline';
 import api from '../../../services/api';
+import ConfirmModal from '../../../components/ConfirmModal';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -61,6 +62,8 @@ export default function BeritaMetrics() {
   const [commentStatus, setCommentStatus] = useState('pending');
   const [commentsPagination, setCommentsPagination] = useState({ current_page: 1, last_page: 1 });
   const [trendPeriod, setTrendPeriod] = useState('30');
+  const [deleteConfirm, setDeleteConfirm] = useState({ open: false, id: null });
+  const [deleting, setDeleting] = useState(false);
 
   const fetchOverview = useCallback(async () => {
     try {
@@ -143,14 +146,18 @@ export default function BeritaMetrics() {
     }
   };
 
-  const handleDeleteComment = async (id) => {
-    if (!window.confirm('Yakin ingin menghapus komentar ini?')) return;
+  const handleDeleteComment = async () => {
+    if (!deleteConfirm.id) return;
+    setDeleting(true);
     try {
-      await api.delete(`/admin/berita-metrics/comments/${id}`);
+      await api.delete(`/admin/berita-metrics/comments/${deleteConfirm.id}`);
       fetchComments(commentsPagination.current_page);
       fetchOverview();
+      setDeleteConfirm({ open: false, id: null });
     } catch (error) {
       console.error('Error deleting comment:', error);
+    } finally {
+        setDeleting(false);
     }
   };
 
@@ -514,7 +521,7 @@ export default function BeritaMetrics() {
                         </button>
                       )}
                       <button
-                        onClick={() => handleDeleteComment(comment.id)}
+                        onClick={() => setDeleteConfirm({ open: true, id: comment.id })}
                         className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Hapus"
                       >
@@ -550,6 +557,17 @@ export default function BeritaMetrics() {
           )}
         </div>
       )}
+      {/* Confirm Modal */}
+      <ConfirmModal 
+        isOpen={deleteConfirm.open}
+        onClose={() => setDeleteConfirm({ open: false, id: null })}
+        onConfirm={handleDeleteComment}
+        loading={deleting}
+        title="Hapus Komentar"
+        message="Apakah Anda yakin ingin menghapus komentar ini? Tindakan ini tidak dapat dibatalkan."
+        confirmText="Hapus"
+        type="danger"
+      />
     </div>
   );
 }
