@@ -118,7 +118,7 @@ export default function Beranda() {
     return (
         <div className="overflow-x-hidden font-sans">
             {/* HERO SECTION */}
-            <section className="relative min-h-[85vh] flex items-center bg-gray-900 overflow-hidden">
+            <section className="relative min-h-[70vh] sm:min-h-[80vh] md:min-h-[85vh] flex items-center bg-gray-900 overflow-hidden">
                 <div className="absolute inset-0 z-0">
                     <img
                         src="https://images.unsplash.com/photo-1564121211835-e88c852648ab?q=80&w=2070&auto=format&fit=crop"
@@ -128,21 +128,21 @@ export default function Beranda() {
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent"></div>
                 </div>
 
-                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center">
+                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center py-12 sm:py-0">
                     <div className="animate-fade-in-up">
                         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-sm font-medium mb-8">
                             <span className="w-2 h-2 rounded-full bg-kemenag-gold animate-pulse"></span>
                             <span>Kantor Urusan Agama Kec. Sembawa</span>
                         </div>
 
-                        <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight leading-tight mb-8">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white tracking-tight leading-tight mb-6 sm:mb-8">
                             Layanan Keagamaan <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-kemenag-gold to-amber-300">
                                 Profesional & Terpercaya
                             </span>
                         </h1>
 
-                        <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+                        <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed px-2">
                             Mewujudkan masyarakat Sembawa yang taat beragama, rukun, cerdas, dan sejahtera melalui layanan digital yang transparan.
                         </p>
 
@@ -159,20 +159,20 @@ export default function Beranda() {
             </section>
 
             {/* PRAYER TIMES & LIVE CLOCK */}
-            <section className="-mt-20 relative z-20 pb-12">
+            <section className="-mt-8 sm:-mt-14 md:-mt-20 relative z-20 pb-8 sm:pb-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
-                        <div className="p-8">
-                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8 border-b border-gray-100 pb-6">
+                        <div className="p-4 sm:p-6 md:p-8">
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 sm:gap-6 mb-6 sm:mb-8 border-b border-gray-100 pb-4 sm:pb-6">
                                 <div>
-                                    <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
-                                        <ClockIcon className="w-8 h-8 text-kemenag-green" />
+                                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2 sm:gap-3">
+                                        <ClockIcon className="w-6 h-6 sm:w-8 sm:h-8 text-kemenag-green flex-shrink-0" />
                                         Jadwal Waktu Sholat
                                     </h2>
                                     <p className="text-gray-500 mt-1">Kecamatan Sembawa, Banyuasin</p>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-4xl font-bold font-mono text-gray-900 tracking-wider">
+                                    <div className="text-2xl sm:text-3xl md:text-4xl font-bold font-mono text-gray-900 tracking-wider">
                                         {formatTime(currentTime)}
                                     </div>
                                     <div className="text-gray-500 font-medium mt-1">
@@ -182,7 +182,7 @@ export default function Beranda() {
                             </div>
 
                             {prayerTimes ? (
-                                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
                                     {[
                                         { name: 'Subuh', time: prayerTimes.Fajr },
                                         { name: 'Dzuhur', time: prayerTimes.Dhuhr },
@@ -192,16 +192,16 @@ export default function Beranda() {
                                     ].map((prayer) => (
                                         <div
                                             key={prayer.name}
-                                            className={`rounded-2xl p-5 text-center transition-all ${
+                                            className={`rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 text-center transition-all ${
                                                 nextPrayer?.name === prayer.name
                                                     ? 'bg-kemenag-green text-white shadow-lg scale-105'
                                                     : 'bg-gray-50 text-gray-900 hover:bg-gray-100'
                                             }`}
                                         >
-                                            <div className="text-sm font-semibold uppercase tracking-wider opacity-80 mb-1">
+                                            <div className="text-xs sm:text-sm font-semibold uppercase tracking-wider opacity-80 mb-1">
                                                 {prayer.name}
                                             </div>
-                                            <div className="text-2xl font-bold">
+                                            <div className="text-lg sm:text-xl md:text-2xl font-bold">
                                                 {prayer.time}
                                             </div>
                                         </div>
@@ -216,14 +216,14 @@ export default function Beranda() {
             </section>
 
             {/* SERVICES SECTION */}
-            <section className="py-20 bg-gray-50">
+            <section className="py-12 sm:py-16 md:py-20 bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-2xl mx-auto mb-16">
                         <span className="text-kemenag-gold font-bold tracking-wider text-sm uppercase">Layanan Unggulan</span>
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-2">Akses Layanan Digital</h2>
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mt-2">Akses Layanan Digital</h2>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-8">
+                    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
                         {[
                             {
                                 title: 'Pendaftaran Nikah',
@@ -247,7 +247,7 @@ export default function Beranda() {
                                 color: 'bg-emerald-600'
                             },
                         ].map((service, idx) => (
-                            <Link key={idx} to={service.href} className="group bg-white rounded-3xl p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                            <Link key={idx} to={service.href} className="group bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                                 <div className={`w-14 h-14 rounded-2xl ${service.color} text-white flex items-center justify-center mb-6 shadow-lg shadow-gray-200 group-hover:scale-110 transition-transform`}>
                                     {service.icon}
                                 </div>
@@ -263,12 +263,12 @@ export default function Beranda() {
             </section>
 
             {/* KALENDER NIKAH (NEW) */}
-            <section className="py-20 bg-white border-t border-gray-100">
+            <section className="py-12 sm:py-16 md:py-20 bg-white border-t border-gray-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12 gap-4">
+                    <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-8 sm:mb-12 gap-4">
                         <div>
                             <span className="text-pink-500 font-bold tracking-wider text-sm uppercase">Agenda Bahagia</span>
-                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-2">Jadwal Akad Nikah Terkini</h2>
+                            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mt-2">Jadwal Akad Nikah Terkini</h2>
                             <p className="text-gray-500 mt-2 max-w-xl">Pasangan yang akan melangsungkan pernikahan di KUA Kecamatan Sembawa.</p>
                         </div>
                         <Link to="/jadwal-nikah" className="btn-secondary">
@@ -279,7 +279,7 @@ export default function Beranda() {
                     {loadingWeddings ? (
                         <div className="text-center py-12 text-gray-400">Memuat jadwal nikah...</div>
                     ) : weddings.length > 0 ? (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                             {weddings.map((wedding) => (
                                 <div key={wedding.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow">
                                     <div className="flex items-center gap-3 mb-4">
@@ -322,12 +322,12 @@ export default function Beranda() {
             </section>
 
             {/* BERITA & INFORMASI */}
-            <section className="py-20 bg-gray-50">
+            <section className="py-12 sm:py-16 md:py-20 bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-end mb-12">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8 sm:mb-12">
                         <div>
                             <span className="text-kemenag-green font-bold tracking-wider text-sm uppercase">Berita & Informasi</span>
-                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-2">Kabar KUA Sembawa</h2>
+                            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mt-2">Kabar KUA Sembawa</h2>
                         </div>
                         <Link to="/berita" className="hidden sm:inline-flex btn-secondary">
                             Lihat Semua
@@ -337,7 +337,7 @@ export default function Beranda() {
                     {loadingNews ? (
                         <div className="text-center py-12 text-gray-400">Memuat berita...</div>
                     ) : news.length > 0 ? (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
                             {news.map((item) => (
                                 <Link key={item.id} to={`/berita/${item.slug}`} className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
                                     <div className="relative h-48 overflow-hidden">
@@ -375,11 +375,11 @@ export default function Beranda() {
             </section>
 
             {/* FAQ SECTION */}
-            <section className="py-20 bg-white border-t border-gray-100">
+            <section className="py-12 sm:py-16 md:py-20 bg-white border-t border-gray-100">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
                         <span className="text-kemenag-green font-bold tracking-wider text-sm uppercase">FAQ</span>
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-2">Pertanyaan Sering Diajukan</h2>
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mt-2">Pertanyaan Sering Diajukan</h2>
                         <p className="text-gray-500 mt-3">Beberapa pertanyaan umum seputar layanan KUA Kecamatan Sembawa.</p>
                     </div>
 
@@ -409,9 +409,9 @@ export default function Beranda() {
                             <div key={idx} className="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50/50 hover:bg-white transition-colors">
                                 <button
                                     onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                                    className="w-full flex justify-between items-center p-6 text-left focus:outline-none"
+                                    className="w-full flex justify-between items-center p-4 sm:p-6 text-left focus:outline-none"
                                 >
-                                    <span className={`font-bold text-lg ${openFaq === idx ? 'text-kemenag-green' : 'text-gray-900'}`}>
+                                    <span className={`font-bold text-base sm:text-lg pr-4 ${openFaq === idx ? 'text-kemenag-green' : 'text-gray-900'}`}>
                                         {faq.question}
                                     </span>
                                     <span className={`transform transition-transform duration-300 ${openFaq === idx ? 'rotate-180' : ''}`}>

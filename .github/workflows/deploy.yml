@@ -1,4 +1,4 @@
-name: Deploy BEKASEMWEB Frontend
+name: Deploy BEKASEMWEB Frontend to cPanel
 
 on:
   push:
@@ -8,28 +8,28 @@ on:
 
 jobs:
   # ==========================================
-  # BUILD & TEST JOB
+  # BUILD JOB
   # ==========================================
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
-      
+          node-version: "20"
+          cache: "npm"
+
       - name: Install Dependencies
         run: npm ci
-      
-      - name: Build
+
+      - name: Build for Production
         run: npm run build
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://api.kua-sembawa.go.id/api' }}
-      
+          VITE_API_URL: https://api.yazidtest.my.id/api
+
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -37,30 +37,32 @@ jobs:
           path: dist/
 
   # ==========================================
-  # DEPLOY JOB - Deploy to VPS
+  # DEPLOY JOB - Deploy to cPanel via FTP
   # ==========================================
   deploy:
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
+
     steps:
       - name: Download Build Artifact
         uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist/
-      
-      - name: Deploy to VPS via SCP
-        uses: appleboy/scp-action@v0.1.4
+
+      - name: Deploy to cPanel via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }}
-          source: "dist/*"
-          target: "/var/www/bekasemweb-frontend"
-          strip_components: 1
-      
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ secrets.FTP_PORT || 21 }}
+          local-dir: ./dist/
+          server-dir: /yazidtest.my.id/
+          exclude: |
+            **/.git*
+            **/.git*/**
+
       - name: Notify Success
         run: echo "✅ Frontend deployment completed successfully!"
