@@ -35,6 +35,7 @@ jobs:
         with:
           name: dist
           path: dist/
+          include-hidden-files: true
 
   # ==========================================
   # DEPLOY JOB - Deploy to cPanel via FTP
@@ -63,6 +64,8 @@ jobs:
           exclude: |
             **/.git*
             **/.git*/**
+            **/.well-known/**
+            **/cgi-bin/**
 
       - name: Notify Success
         run: echo "✅ Frontend deployment completed successfully!"
